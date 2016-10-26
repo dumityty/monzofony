@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col l8 offset-l2 m12 s12">
+             {% for date,transactions in transaction_dates %}
+                <p>{{ date }}</p>
+                <ul class="collapsible" data-collapsible="accordion">
+                    {% for txn in transactions %}
+                        <li class="">
+                            <div class="collapsible-header">
+                                {% if (txn.category == 'cash') %}
+                                    <img src="" alt="" class="circle"><i class="fa fa-money" aria-hidden="true"></i>
+                                {% elseif (txn.category == 'groceries') %}
+                                    <img src="" alt="" class="circle"><i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                {% elseif (txn.category == 'eating_out') %}
+                                    <img src="" alt="" class="circle"><i class="fa fa-cutlery" aria-hidden="true"></i>
+                                {% elseif (txn.category == 'general') %}
+                                    <img src="" alt="" class="circle"><i class="fa fa-money" aria-hidden="true"></i>
+                                {% elseif (txn.category == 'entertainment') %}
+                                    <img src="" alt="" class="circle"><i class="fa fa-smile-o" aria-hidden="true"></i>
+                                {% elseif (txn.category == 'shopping') %}
+                                    <img src="" alt="" class="circle"><i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                                {% elseif (txn.category == 'mondo') %}
+                                    <img src="" alt="" class="circle"><i class="fa fa-money" aria-hidden="true"></i>
+                                {% elseif (txn.category == 'holidays') %}
+                                    <img src="" alt="" class="circle"><i class="fa fa-suitcase" aria-hidden="true"></i>
+                                {% else %}
+                                    <img src="" alt="" class="circle"><i class="fa fa-question" aria-hidden="true"></i>
+                                {% endif %}
+                                {% if txn.merchant %}
+                                <span class="title">{{ txn.merchant.name }}</span>
+                                {% else %}
+                                <span class="title">Top Up</span>
+                                {% endif %}
+                                <span class="secondary-content {% if (txn.amount > 0) %}light-green-text text-accent-4{% else %}blue-grey-text text-darken-4{% endif %}">{{ (txn.amount/100)|abs }}</span>
+                            </div>
+                            <div class="collapsible-body">
+                                <div class="card-panel">
+                                    <div class="row valign-wrapper">
+                                        <div class="col s2">
+                                            {# todo: this will be the merchant logo, maybe? #}
+                                            <i class="fa fa-gbp" aria-hidden="true"></i>
+                                        </div>
+
+                                        <div class="col s8">
+                                            <span class="black-text">
+                                                {{ txn.category }}
+                                                <br>
+                                                {{ txn.description }}
+                                                <br>
+                                                {{ txn.created|date('j M Y H:i:s') }}
+                                            </span>
+                                        </div>
+
+                                        <div class="col s2">
+                                            {#<img src="images/yuna.jpg" alt="" class="circle responsive-img">#}
+                                            <a href=""><i class="fa fa-globe fa-2x" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+             {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}

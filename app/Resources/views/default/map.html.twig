@@ -1,0 +1,16 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Map{% endblock %}
+
+{% block body %}
+    <div id="map" style="height:200px;"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+    <script  type="text/javascript">
+        var mymap = L.map('map').setView([51.505, -0.09], 13);
+    </script>
+{% endblock %}

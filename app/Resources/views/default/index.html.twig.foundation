@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="row">
+    <table>
+        <thead>
+            <tr>
+                <td>Amount</td>
+                <td>Merchant</td>
+                <td>Date</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for txn in transactions %}
+                {% if txn.merchant %}
+                    <tr><td>{{ (txn.amount/100) }}</td><td>{{ txn.merchant.name }}</td><td>{{ txn.created|date('d/m/Y H:i:s') }}</td></tr>
+                {% else %}
+                    <tr><td>{{ (txn.amount/100) }}</td><td>Top Up</td><td>{{ txn.created|date('d/m/Y H:i:s') }}</td></tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}

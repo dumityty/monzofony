@@ -5,8 +5,8 @@
             <li><a href="/"><i class="fa fa-th-list" aria-hidden="true"></i></a></li>
             <li><a href="/map"><i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
             <li><a>{{ account_name }}</a></li>
-            <li><a>£{{ balance }}</a></li>
-            <li><a>£{{ spent_today }}</a></li>
+            <li><a class="blue-text text-lighten-2">£{{ balance }}</a></li>
+            <li><a class="red-text text-lighten-2">£{{ spent_today|abs }}</a></li>
         </ul>
     </div>
 </nav>

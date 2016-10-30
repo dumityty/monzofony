@@ -12,8 +12,8 @@ class DefaultController extends Controller
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
+      // BEGIN REPEAT
       // todo: use the refresh token to get a new access token?
       if (!isset($_SESSION['access_token']) || (time() > $_SESSION['access_token']['expires'])) {
         return $this->redirectToRoute('login');
@@ -47,6 +47,7 @@ class DefaultController extends Controller
       $entity = $balance->get($account_id);
       $balance = $entity->getBalance();
       $spent_today = $entity->getSpendToday();
+      // END REPEAT
 
       $collection = new \Edcs\Mondo\Resources\Transactions($client);
       $transactions_collection = $collection->get($account_id);
@@ -107,7 +108,62 @@ class DefaultController extends Controller
           header('Location: /');
           exit;
         }
+    }
 
+  /**
+   * @Route("/txn/{txn_id}", name="txn_view")
+   */
+    public function txnAction(Request $request, $txn_id) {
+      // BEGIN REPEAT
+      // todo: use the refresh token to get a new access token?
+      if (!isset($_SESSION['access_token']) || (time() > $_SESSION['access_token']['expires'])) {
+        return $this->redirectToRoute('login');
+      }
+
+      $client = new \GuzzleHttp\Client([
+        'base_uri' => 'https://api.monzo.com',
+        'headers'  => [
+          'Authorization' => 'Bearer ' . $_SESSION['access_token']['access_token'],
+        ],
+      ]);
+      $client = new \Http\Adapter\Guzzle6\Client($client);
+
+      // need a better way to handle this
+      // maybe middlewares?
+      try {
+        $accounts = new \Edcs\Mondo\Resources\Accounts($client);
+        $collection = $accounts->get();
+      } catch (\Exception $e) {
+        if ($e->getCode() == 401) {
+          return $this->redirectToRoute('login');
+        }
+      }
+
+      $account = $collection[0];
+      $account_id = $account->getId();
+      $description = $account->getDescription();
+      $created = $account->getCreated();
+
+      $balance = new \Edcs\Mondo\Resources\Balances($client);
+      $entity = $balance->get($account_id);
+      $balance = $entity->getBalance();
+      $spent_today = $entity->getSpendToday();
+      // END REPEAT
+
+      $transactions = new \Edcs\Mondo\Resources\Transactions($client);
+      $transaction = $transactions->find($txn_id);
+
+      return $this->render('default/txn.html.twig', [
+        'mapbox_access_token' => $this->getParameter('mapbox_access_token'),
+        'mapbox_username' => $this->getParameter('mapbox_username'),
+        'mapbox_project_id' => $this->getParameter('mapbox_project_id'),
+        'account_name' => $description,
+        'created' => $created/100,
+        'balance' => ($balance/100),
+        'spent_today' => ($spent_today/100),
+        'txn_id' => $txn_id,
+        'txn' => $transaction,
+      ]);
     }
 
 }

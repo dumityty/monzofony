@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {#{{ dump(txn) }}#}
+    <div class="container">
+        {% if txn.merchant.name is defined %}
+            <div class="map" id="mapid" style="height:200px"></div>
+        {% endif %}
+
+        <div class="card-panel">
+            <div class="row valign-wrapper">
+                <div class="col s2">
+                    <img src="{% if txn.merchant.logo is defined %}{{ txn.merchant.logo }}{% endif %}" alt="" class="circle responsive-img" style="height:60px">
+                </div>
+                <div class="col s10">
+                    {% if txn.merchant.name is defined %}
+                        <span class="grey-text text-darken-4"> <span class="{% if (txn.amount > 0) %}light-green-text text-accent-4{% endif %}">{{ (txn.amount/100)|abs }}</span> at {{ txn.merchant.name }}</span>
+                    {% elseif txn.is_load %}
+                        <span class="grey-text text-darken-4"> <span class="{% if (txn.amount > 0) %}light-green-text text-accent-4{% endif %}">{{ (txn.amount/100)|abs }}</span> top up</span>
+                    {% endif %}
+                </div>
+             </div>
+        </div>
+
+        <table class="bordered highlight">
+            <tbody>
+                <tr>
+                    <td>Date</td>
+                    <td>{{ txn.created|date('j M Y H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td>{{ txn.description }}</td>
+                </tr>
+                <tr>
+                    <td>Category</td>
+                    <td>{{ txn.category }}</td>
+                </tr>
+                {% if txn.merchant.name is defined %}
+                <tr>
+                    <td>Address</td>
+                    <td>{{ txn.merchant.address.formatted }}</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+    <script  type="text/javascript">
+        {% if txn.merchant.name is defined %}
+            var mymap = L.map('mapid').setView([{{ txn.merchant.address.latitude }}, {{ txn.merchant.address.longitude }}], 13);
+            L.tileLayer('https://api.mapbox.com/styles/v1/{{ mapbox_username }}/{{ mapbox_project_id }}/tiles/256/{z}/{x}/{y}?access_token={{ mapbox_access_token }}', {
+                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                maxZoom: 18,
+            }).addTo(mymap);
+            var marker = L.marker([{{ txn.merchant.address.latitude }}, {{ txn.merchant.address.longitude }}]).addTo(mymap);
+        {% endif %}
+    </script>
+{% endblock %}

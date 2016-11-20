@@ -4,7 +4,7 @@
     {#{{ dump(txn) }}#}
     <div class="container">
         {% if txn.merchant.name is defined %}
-            <div class="map" id="mapid" style="height:200px"></div>
+            <div class="map" id="mapid" style="height:300px"></div>
         {% endif %}
 
         <div class="card-panel">
@@ -39,7 +39,7 @@
                 {% if txn.merchant.name is defined %}
                 <tr>
                     <td>Address</td>
-                    <td>{{ txn.merchant.address.formatted }}</td>
+                    <td>{{ txn.merchant.address.short_formatted }}</td>
                 </tr>
                 {% endif %}
             </tbody>

@@ -10,6 +10,7 @@
                     {% for txn in transactions %}
                         <li class="">
                             <div class="collapsible-header">
+                                {# todo: there are some categories missing and also tidy up this #}
                                 {% if (txn.category == 'cash') %}
                                     <img src="" alt="" class="circle"><i class="fa fa-money" aria-hidden="true"></i>
                                 {% elseif (txn.category == 'groceries') %}
@@ -37,11 +38,15 @@
                                 <span class="secondary-content {% if (txn.amount > 0) %}light-green-text text-accent-4{% else %}blue-grey-text text-darken-4{% endif %}">{{ (txn.amount/100)|abs }}</span>
                             </div>
                             <div class="collapsible-body">
-                                <div class="card-panel">
-                                    <div class="row valign-wrapper">
+                                <div class="card-panel z-depth-0" style="margin-bottom: 0">
+                                    <div class="row valign-wrapper" style="margin-bottom: 0;">
                                         <div class="col s2">
-                                            {# todo: this will be the merchant logo, maybe? #}
+                                            {% if txn.merchant.name is defined %}
+                                                {# todo: handle nonexistent merchant logos? #}
+                                                <img src="{{ txn.merchant.logo }}" alt="" class="circle responsive-img" style="height:50px">
+                                            {% else %}
                                             <i class="fa fa-gbp" aria-hidden="true"></i>
+                                            {% endif %}
                                         </div>
 
                                         <div class="col s8">
